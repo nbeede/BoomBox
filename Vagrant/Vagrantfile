@@ -1,0 +1,57 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "sandbox" do |cfg|
+    cfg.vm.box = "boomboxes/sandbox"
+    cfg.vm.hostname = "sandbox"
+    cfg.vm.boot_timeout = 600
+    cfg.winrm.transport = :plaintext
+    cfg.vm.communicator = "winrm"
+    cfg.winrm.basic_auth_only = true
+    cfg.winrm.timeout = 100
+    cfg.winrm.retry_limit = 20
+    cfg.vm.network :private_network, ip: "192.168.30.101", gateway: "192.168.30.100", dns: "192.168.30.100"
+
+    cfg.vm.provision "shell", path: "scripts/disable_winupdate.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/disable_winfirewall.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/disable_defender.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/install_choco.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/install_python.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/install_pillow.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/install_agent.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/enable_rpc.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/fix_networking.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/disable_defender.ps1", privileged: false
+    cfg.vm.provision "shell", path: "scripts/disable_probing.ps1", privileged: false
+
+    cfg.vm.synced_folder ".", "/vagrant", disabled: true
+
+    cfg.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.name  = "sandbox"
+      vb.default_nic_type = "82545EM"
+      vb.customize ["modifyvm", :id, "--memory", 4096]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+
+  config.vm.define "cuckoo" do |cfg|
+    cfg.vm.box = "bento/ubuntu-16.04"
+    cfg.vm.hostname = "cuckoo"
+    config.vm.provision :shell, path: "bootstrap.sh"
+    cfg.vm.network :private_network, ip: "192.168.30.100", gateway: "192.168.30.1", dns: "8.8.8.8"
+
+    cfg.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.name = "cuckoo"
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
+      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
+end
