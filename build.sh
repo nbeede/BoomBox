@@ -5,7 +5,7 @@
 # been executed. Only MacOS and Linux are supported. Use build.ps1 for Windows.
 
 print_usage() {
-  echo "Usage: ./build.sh virtualbox <--vagrant-only | --packer-only>"
+  echo "Usage: ./build.sh virtualbox [--vagrant-only | --packer-only]"
   exit 0
 }
 
@@ -17,7 +17,7 @@ parse_cli_arguments() {
   # If more than two arguments were supplied, print usage message
   if [ "$#" -gt 2 ]; then
     print_usage
-    exit1
+    exit 1
   fi
   if [ "$#" -ge 1 ]; then
     # If the user speicifies the provider as an argument, set the variable.
@@ -84,7 +84,8 @@ check_packer_path() {
   # Check for existence of Packer in PATH
   if ! which packer >/dev/null; then
     (echo >&2 "Packer was not found in your PATH.")
-    (echo >2& "Please correct this before continuin. Quitting.")
+    (echo >&2 "Please correct this before continuing. Quitting.")
+    (echo >&2 "You can download it here: https://www.packer.io/downloads.html")
     (echo >&2 "Hint: sudo cp ./packer /usr/local/bin/packer; sudo chmod +x /usr/local/bin/packer")
     exit 1
   fi
@@ -95,6 +96,7 @@ check_vagrant_path() {
   if ! which vagrant >/dev/null; then
     (echo >&2 "Vagrant was not found in your PATH.")
     (echo >&2 "Please correct this before continuing. Quitting.")
+    (echo >&2 "You can download it here: https://www.vagrantup.com/downloads.html")
     (echo >&2 "Hint: sudo cp ./vagrant /usr/local/bin/vagrant; sudo chmod +x /usr/local/bin/vagrant")
     exit 1
   fi
@@ -106,7 +108,7 @@ check_vagrant_instances_exist() {
   # Vagrant status has the potential to return a non-zero error code, so we work around it with "|| true"
   VAGRANT_BUILT=$(vagrant status | grep -c 'not created') || true
   if [ "$VAGRANT_BUILT" -ne 2 ]; then
-    (echo >&2 "You appear to have already created at least one Vagrant instance. This script does not suppoer pre-created instances. Please either destroy the existing instances or follow the build steps in the README to continue.")
+    (echo >&2 "You appear to have already created at least one Vagrant instance of BoomBox. This script does not support pre-created instances. Please either destroy the existing instances or follow the build steps in the README to continue.")
     exit 1
   fi
 }
@@ -139,7 +141,7 @@ check_disk_free_space() {
   # Check available disk space. Recommend 40GB free, warn if less.
   FREE_DISK_SPACE=$(df -m "$HOME" | tr -s ' ' | grep '/' | cut -d ' ' -f 4)
   if [ "$FREE_DISK_SPACE" -lt 40000 ]; then
-    (echo >&2 -e "Warning: You appear to have less than 40GB of HDD space free on your primary partition. If you are using a seperate partition, you may ignore this warning.\n")
+    (echo >&2 -e "Warning: You appear to have less than 40GB of HDD space free on your primary partition. If you are using a separate partition, you may ignore this warning.\n")
     (df >&2 -m "$HOME")
     (echo >&2 "")
   fi
@@ -200,13 +202,13 @@ build_vagrant_hosts() {
     if [ "$RET" -eq 0 ]; then
       (echo >&2 "Good news! $HOST was build successfully!")
     fi
-    # Attempt to recover if the inital "vagrant up" fails
+    # Attempt to recover if the initial "vagrant up" fails
     if [ "$RET" -ne 0 ]; then
       (echo >&2 "Something went wrong while attempting to build the $HOST box.")
       (echo >&2 "Attempting to reload and reprovision the host...")
       RETRY_STATUS=$(vagrant_reload_host "$HOST")
       if [ "$RETRY_STATUS" -eq 0 ]; then
-        (echo >&2 "Good news! $HOST was build successfully after a reload. Exiting.")
+        (echo >&2 "Good news! $HOST was built successfully after a reload. Exiting.")
       else
         (echo >&2 "Failed to bring up $HOST after a reload. Exiting.")
         exit 1
@@ -228,7 +230,7 @@ vagrant_reload_host() {
   HOST="$1"
   cd "$DL_DIR"/Vagrant || exit 1
   # Attempt to reload the host if the vagrant up command didn't exit cleanly
-  $(which vagrant) reload "$HOST" --provision >>"$DL_DIR/Vagrant/vagrant_up_$HOST.log" 2>&1
+  $(which vagrant) reload "$HOST" --provision >> "$DL_DIR/Vagrant/vagrant_up_$HOST.log" 2>&1
   echo "$?"
 }
 
@@ -237,10 +239,10 @@ create_snapshot() {
   (echo >&2 "Powering off sandbox to remove NAT network adapter...")
   $(which vboxmanage) controlvm sandbox poweroff &> "$DL_DIR/Vagrant/sandbox_snapshot.log"
   sleep 5s
-  $(which vboxmanage) modifyvm sandbox --nic1 null &> "$DL_DIR/Vagrant/sandbox_snapshot.log"
+  $(which vboxmanage) modifyvm sandbox --nic1 null >> "$DL_DIR/Vagrant/sandbox_snapshot.log"
   sleep 5s
   (echo >&2 "Starting sandbox and taking a base snapshot...")
-  $(which vboxmanage) startvm sandbox &> "$DL_DIR/Vagrant/sandbox_snapshot.log"
+  $(which vboxmanage) startvm sandbox >> "$DL_DIR/Vagrant/sandbox_snapshot.log"
   sleep 5s
   # Take a snapshot of the sandbox once the agent is running and nat nic is removed.
   $(which vboxmanage) snapshot "sandbox" take "base" --pause >> "$DL_DIR/Vagrant/sandbox_snapshot.log"
