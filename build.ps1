@@ -67,11 +67,21 @@ function check_virtualbox {
   Write-Host '[check_virtualbox] Checking that Virtualbox is installed...'
   if (install_checker -Name "VirtualBox") {
     Write-Host '[check_virtualbox] Virtualbox found.'
+    check_vboxmanage
     return $true
   }
   else {
     Write-Host '[check_virtualbox] Virtualbox not found.'
     return $false
+  }
+}
+
+function check_vboxmanage {
+  $VBoxManage = "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
+  Write-Host '[check_vboxmanage] Checking for vboxmanage...'
+  if (![bool](Get-Command -Name $VBoxManage -ErrorAction SilentlyContinue)) {
+    Write-Output "VBoxManage.exe was not found at $VBoxManage. Please correct the path to VBoxManage.exe in this build script if you installed VirtualBox in another location."
+    break
   }
 }
 
@@ -237,8 +247,11 @@ function post_build_checks {
 }
 
 function create_snapshot {
+  # stub code to validate that vboxmanage exists
   $VBoxManage = "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
-  # TODO: improve sleep login by polling VM state
+  if (![bool](Get-Command -Name $VBoxManage -ErrorAction SilentlyContinue)) {
+    Write-Output "VBoxManage.exe was not found at $VBoxManage. Please correct the path to VBoxManage.exe in this build script if you installed VirtualBox in another location."
+  }
   Write-Host "Powering off sandbox to remove NAT network adapter..."
   &$VBoxManage @('controlvm', 'sandbox', 'poweroff')
   Start-sleep -Seconds 5

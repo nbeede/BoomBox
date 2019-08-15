@@ -53,6 +53,7 @@ list_providers() {
 
   if [ "$(uname)" == "Darwin" ]; then
     # Detect Providers on OSX
+    # Place holding for future Vagrant providers
     VBOX_PRESENT=$(check_virtualbox_installed)
   else
     VBOX_PRESENT=$(check_virtualbox_installed)
@@ -221,7 +222,6 @@ vagrant_up_host() {
   HOST="$1"
   (echo >&2 "Attempting to bring up the $HOST host using Vagrant")
   cd "$DL_DIR"/Vagrant || exit 1
-  # TODO fix provider var and support vmware workstation
   $(which vagrant) up "$HOST" --provider=virtualbox &> "$DL_DIR/Vagrant/vagrant_up_$HOST.log"
   echo "$?"
 }
