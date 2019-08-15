@@ -1,14 +1,14 @@
 # BoomBox
 
-BoomBox is designed for malware analysts and incident responders. It allows for the rapid deployment of a dynamic analysis environment using Cuckoo Sandbox and a Windows 10 detonation chamber. Cuckoo is configured to use the physical machinery so that both Cuckoo and the Windows sandbox can be virtual machines on a single host.
+BoomBox is designed for malware analysts and incident responders. It allows for the rapid deployment of a dynamic malware analysis environment using Cuckoo Sandbox and a Windows 10 detonation chamber. Cuckoo is configured to use the physical machinery so that both Cuckoo and the Windows sandbox can be virtual machines on a single host.
 
 ## Features
 
 * Inetsim network simulation
 * Cuckoo community modules
-* Clean snapshot of the Windows environment is taken as part of the build process
+* Clean base snapshot of the Windows environment is taken as part of the build process
 * Chocolatey package manager for Windows used to install Adobe Reader, Flash, Chrome, and Firefox.
-  * **NOTE:** Microsoft Office has not been included due to licensing. If you have a license key you can install Office and take a new clean snapshot.
+  * **NOTE:** Microsoft Office has not been included due to licensing. If you have a license key, you can install Office and take a new clean base snapshot.
 
 
 ## Requirements
@@ -76,7 +76,7 @@ Vagrant commands must be run from the "Vagrant" folder.
   * NIC1 attched to Host-only Adapter
 
 ## Snapshots
-There are `revert.ps1` and `revert.sh` scripts that are to be used to restore a clean version of the Windows sandbox. This script will need to be run after each submission to Cuckoo to ensure a consistent execution environment. This is a temporarily solution until there is a good way to have this done automatically.
+There are `revert.ps1` and `revert.sh` scripts that are to be used to restore a clean version of the Windows sandbox. This script will need to be run after each submission to Cuckoo to ensure a consistent detonation environment. This is a temporarily solution until there is a good way to have this done automatically after each detonation.
 
 ## Todo
 - [ ] Sandbox anti-evasion techniques
