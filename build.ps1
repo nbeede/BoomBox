@@ -140,7 +140,6 @@ function prereq_checks {
 
   Write-Host 'Checking for vagrant instances...'
   $CurrentDir = Get-Location
-  Write-Host $DL_DIR
   Set-Location "$DL_DIR\Vagrant"
   if (($(vagrant status) | Select-String -Pattern "not[ _]created").Count -ne 2) {
     Write-Error 'There is already at least one vagrant instance. This script does not support already created instanced. Please destroy existing instance.'
