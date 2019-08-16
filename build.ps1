@@ -307,4 +307,5 @@ if (!($PackerOnly)) {
   Write-Host "[main] Finished post_build_checks"
   Write-Host "[main] Creating a base snapshot for sandbox"
   create_snapshot
+  Write-Host "[main] Everything has completed! Cuckoo should now be available at http://192.168.30.100:8080"
 }
