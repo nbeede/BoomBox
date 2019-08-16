@@ -1,3 +1,5 @@
+![GitHub Release Date](https://img.shields.io/github/release-date/nbeede/BoomBox)
+![Latest GitHub release](https://img.shields.io/github/release/nbeede/BoomBox)
 # BoomBox
 
 BoomBox is designed for malware analysts and incident responders. It allows for the rapid deployment of a dynamic malware analysis environment using Cuckoo Sandbox and a Windows 10 detonation chamber. Cuckoo is configured to use the physical machinery so that both Cuckoo and the Windows sandbox can be virtual machines on a single host.
