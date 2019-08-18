@@ -1,4 +1,4 @@
-
+![BoomBox](./img/BoomBox.png)
 # BoomBox
 
 [![GitHub Release Date](https://img.shields.io/github/release-date/nbeede/BoomBox)](https://img.shields.io/github/release-date/nbeede/BoomBox)
