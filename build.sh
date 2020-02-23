@@ -176,6 +176,8 @@ prereq_checks() {
 
 # Builds a box using Packer
 packer_build_box() {
+  # Export the box in $DL_DIR default is /tmp
+  export TMP_DIR=$DL_DIR
   BOX="$1"
   cd "$DL_DIR/Packer" || exit 1
   (echo >&2 "Using Packer to build the $BOX Box. This can take 90-180 minutes depending on bandwidth and hardware.")
