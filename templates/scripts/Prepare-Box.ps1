@@ -161,3 +161,35 @@ else
     write-Host "Setting WinRM to start automatically.."
     & sc.exe config WinRM start= auto
 }
+
+# MWGA registry mods
+Write-Host "MWGA registry modifications"
+Write-Host "Importing registry keys..."
+
+$mwgaReg = @"
+regKey,name,value,type
+"HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Policies\System","NoConnectedUser",3,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced","HideFileExt",0,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced","LaunchTo",1,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced","Hidden",1,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel","{20D04FE0-3AEA-1069-A2D8-08002B30309D}",0,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu","{20D04FE0-3AEA-1069-A2D8-08002B30309D}",0,"DWord"
+"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People","PeopleBand",0,"DWord"
+"@
+
+$mwgaReg | ConvertFrom-Csv | ForEach-Object {
+    if(!(Test-Path $_.regKey)){
+        Write-Host $_.regKey " does not exist.."
+        New-Item $_.regKey -Force
+    }
+    Write-Host "Setting " $_.regKey
+    New-ItemProperty -Path $_.regKey -Name $_.name -Value $_.value -PropertyType $_.type -force
+}
+
+Write-Host "Removing Microsoft Store, Mail, and Edge shortcuts from the taskbar..."
+$appname = "Microsoft Edge"
+((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | ?{$_.Name -eq $appname}).Verbs() | ?{$_.Name.replace('&','') -match 'Unpin from taskbar'} | %{$_.DoIt(); $exec = $true}
+$appname = "Microsoft Store"
+((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | ?{$_.Name -eq $appname}).Verbs() | ?{$_.Name.replace('&','') -match 'Unpin from taskbar'} | %{$_.DoIt(); $exec = $true}
+$appname = "Mail"
+((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | ?{$_.Name -eq $appname}).Verbs() | ?{$_.Name.replace('&','') -match 'Unpin from taskbar'} | %{$_.DoIt(); $exec = $true}
