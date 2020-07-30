@@ -46,14 +46,13 @@
       },
       "_artifactsLocation": {
           "type": "string",
-          "defaultValue": "https://raw.githubusercontent.com/nbeede/BoomBox/master/",
+          "defaultValue": "https://raw.githubusercontent.com/nbeede/BoomBox/azure/",
           "metadata": {
               "description": "The location of resources, such as templates and DSC modules, that the template depends on"
           }
       }
     },
     "variables": {
-        // boilerplate to get vm up
       "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'boombox')]",
       "nicName": "myVMNic",
       "addressPrefix": "10.0.0.0/16",
@@ -64,19 +63,7 @@
       "virtualNetworkName": "VNETtest",
       "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
       "networkSecurityGroupName": "testNSG",
-      // post install stuff
       "prepareBoxScript": "[uri(parameters('_artifactsLocation'), concat('templates/scripts/Prepare-Box.ps1'))]"
-    //   "enableRdp": "[concat(parameters('_artifactsLocation'),'scripts/enable-rdp.bat')]",
-    //   "debloatWindows": "[concat(parameters('_artifactsLocation'),'scripts/debloat-windows.ps1')]",
-    //   "rearmWindows": "[concat(parameters('_artifactsLocation'),'scripts/rearm-windows.ps1')]",
-    //   "MWGA": "[concat(parameters('_artifactsLocation'),'scripts/MakeWindows10GreatAgain.ps1')]",
-    //   "setPowerPlan": "[concat(parameters('_artifactsLocation'),'scripts/set-powerplan.ps1')]",
-    //   "disableDefender": "[concat(parameters('_artifactsLocation'),'scripts/docker/disable-windows-defender.ps1')]",
-    //   "pinPowershell": "[concat(parameters('_artifactsLocation'),'scripts/enable-rdp.bat')]",
-    //   "compileNET": "[concat(parameters('_artifactsLocation'),'scripts/compile-dotnet-assemblies.bat')]",
-    //   "setWinRM": "[concat(parameters('_artifactsLocation'),'scripts/set-winrm-automatic.bat')]",
-    //   "compact": "[concat(parameters('_artifactsLocation'),'scripts/compact.bat')]"
-
     },
     "resources": [
         {
@@ -231,12 +218,12 @@
             }
         },
         {
-            "name": "SetupWinVM",
+            "name": "[concat(variables('vmName'), '/SetupWinVM')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2019-12-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName')[copyIndex()])]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -245,7 +232,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/nbeede/BoomBox/master/templates/scripts/initialSetup.ps1",
+                        "https://raw.githubusercontent.com/nbeede/BoomBox/azure/templates/scripts/initialSetup.ps1",
                         "[variables('prepareBoxScript')]"
                     ],
                     "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File ./initialSetup.ps1"
