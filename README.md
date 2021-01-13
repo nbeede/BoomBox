@@ -32,9 +32,9 @@ BoomBox includes a single build script for Linux, macOS, and Windows. This scrip
 -   `./build.sh virtualbox --packer-only` - This will only build the .Box files and will not build the VMs using Vagrant.
 
 ### Windows
--   `./build.ps1 -ProviderName virtualbox` - Build BoomBox from scratch.
--   `./build.ps1 -ProviderName virtualbox -VagrantOnly` - Build BoomBox using pre-built Packer boxes hosted on Vagrant Cloud. This option is faster than building BoomBox from scratch.
--   `/.build.ps1 -ProviderName virtualbox -PackerOnly` - This will only build the .Box files and will not build the VMs using Vagrant.
+-   `.\build.ps1 -ProviderName virtualbox` - Build BoomBox from scratch.
+-   `.\build.ps1 -ProviderName virtualbox -VagrantOnly` - Build BoomBox using pre-built Packer boxes hosted on Vagrant Cloud. This option is faster than building BoomBox from scratch.
+-   `.\build.ps1 -ProviderName virtualbox -PackerOnly` - This will only build the .Box files and will not build the VMs using Vagrant.
 
 ## Manually Building BoomBox
 1.  Build the Windows sandbox using Packer
@@ -54,7 +54,7 @@ $ packer build --only=virtualbox-iso sandbox.json
 
     `vagrant plugin install vagrant-reload`
 
-5.  Run the `./build.sh` for Linux/macOS or `./build.ps1` for Windows from the project root directory
+5.  Run the `./build.sh` for Linux/macOS or `.\build.ps1` for Windows from the project root directory
 
 6.  Logs from the build process are located in the `Vagrant` directory as `vagrant_up_<host>.log`
 
