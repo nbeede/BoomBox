@@ -182,7 +182,8 @@ packer_build_box() {
   cd "$DL_DIR/Packer" || exit 1
   (echo >&2 "Using Packer to build the $BOX Box. This can take 90-180 minutes depending on bandwidth and hardware.")
   PACKER_LOG=1 PACKER_LOG_PATH="$DL_DIR/Packer/packer_build.log"
-  $(which packer) build --only="virtualbox-iso" "$BOX".json >&2
+  $(which packer) fix "$BOX".json > "$BOX"FIXED.json >&2
+  $(which packer) build --only="virtualbox-iso" "$BOX"FIXED.json >&2
   echo "$?"
 }
 
