@@ -22,7 +22,7 @@ apt_install_prerequisites() {
   apt-get -qq install -y apt-fast
   echo "[$(date +%H:%M:%S)]: Running apt-fast install..."
   apt-fast -qq install -y crudini python python-pip python-dev libffi-dev libssl-dev python-virtualenv python-setuptools libjpeg-dev zlib1g-dev swig mongodb postgresql libpq-dev tcpdump apparmor-utils libcap2-bin libguac-client-rdp0 libguac-client-vnc0 libguac-client-ssh0 guacd samba-common-bin
-  echo "[$(date +%H:%M:%S)]: Updateing pip..."
+  echo "[$(date +%H:%M:%S)]: Updating pip..."
   pip install --upgrade pip
   echo "[$(date +%H:%M:%S)]: Installing and configuring inetsim..."
   echo "deb http://www.inetsim.org/debian/ binary/" > /etc/apt/sources.list.d/inetsim.list
