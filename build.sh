@@ -156,6 +156,14 @@ check_curl() {
   fi
 }
 
+check_bsdtar() {
+  # Check to see if bsdtar is in PATH
+  if ! which bsdtar >/dev/null; then
+    (echo >&2 "Please install bsdtar and make sure it is in your PATH --> sudo apt-get install libarchive-tools")
+    exit 1
+  fi
+}
+
 prereq_checks() {
   # If it's not a Vagrant-only build, then run Packer-related checks
   if [ "$VAGRANT_ONLY" -eq 0 ]; then
@@ -172,6 +180,7 @@ prereq_checks() {
   check_boxes_built
   check_disk_free_space
   check_curl
+  check_bsdtar
 }
 
 # Builds a box using Packer
