@@ -180,6 +180,7 @@ prereq_checks() {
   check_boxes_built
   check_disk_free_space
   check_curl
+  check_bsdtar
 }
 
 # Builds a box using Packer
