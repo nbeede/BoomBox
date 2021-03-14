@@ -1,4 +1,3 @@
-# In Windows 7 the following commands can be entered into an Administrative command prompt to enable auto-logon and Remote RPC.
 
 reg add "hklm\software\Microsoft\Windows NT\CurrentVersion\WinLogon" /v DefaultUserName /d vagrant /t REG_SZ /f
 reg add "hklm\software\Microsoft\Windows NT\CurrentVersion\WinLogon" /v DefaultPassword /d vagrant /t REG_SZ /f

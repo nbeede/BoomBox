@@ -14,11 +14,7 @@ else
   Write-Host "Chocolatey is already installed"
 }
 choco feature enable -n allowGlobalConfirmation
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Adobe Reader"
-choco install adobereader
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Adobe Flash Player"
-choco install flashplayerplugin
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Firefox"
-choco install firefox
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Chrome"
-choco install googlechrome
+#Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Adobe Reader"
+#choco install adobereader
+#Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Firefox"
+#choco install firefox
