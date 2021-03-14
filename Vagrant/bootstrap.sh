@@ -25,7 +25,8 @@ apt_install_prerequisites() {
   echo "[$(date +%H:%M:%S)]: Updating pip..."
 #  pip install --upgrade pip
 
-  curl -O https://bootstrap.pypa.io/2.7/get-pip.py
+
+  wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
   python get-pip.py
 
 
