@@ -20,9 +20,9 @@
         "./scripts/win-updates.ps1",
         "./scripts/oracle-cert.cer"
       ],
-      "guest_additions_mode": "disable",
+      "guest_additions_mode": "attach",
       "guest_os_type": "Windows81_64",
-      "headless": false,
+      "headless": true,
       "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
       "iso_url": "{{user `iso_url`}}",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
@@ -32,7 +32,7 @@
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "2048"
+          "8192"
         ],
         [
           "modifyvm",
