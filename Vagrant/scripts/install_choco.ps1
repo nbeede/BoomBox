@@ -14,6 +14,7 @@ else
   Write-Host "Chocolatey is already installed"
 }
 choco feature enable -n allowGlobalConfirmation
+choco install virtualbox-guest-additions-guest.install
 #Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Adobe Reader"
 #choco install adobereader
 #Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Firefox"
