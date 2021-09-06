@@ -9,6 +9,11 @@ print_usage() {
   exit 0
 }
 
+install_deps() {
+  apt-get update ; apt-get -y install vagrant packer ruby
+  gem install winrm ; gem install winrm-elevated
+}
+
 parse_cli_arguments() {
   # If no argument was supplied, list available providers
   if [ "$#" -eq 0 ]; then
@@ -270,7 +275,7 @@ main() {
   DL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   PACKER_ONLY=0
   VAGRANT_ONLY=0
-
+  install_deps
   parse_cli_arguments "$@"
   prereq_checks
 

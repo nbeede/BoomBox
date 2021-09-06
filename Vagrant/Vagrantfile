@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "sandbox" do |cfg|
-    cfg.vm.box = "boomboxes/sandbox"
+    cfg.vm.box = "../Boxes/sandbox_virtualbox.box"
     cfg.vm.hostname = "sandbox"
     cfg.vm.boot_timeout = 600
     cfg.winrm.transport = :plaintext
@@ -26,12 +26,12 @@ Vagrant.configure("2") do |config|
     cfg.vm.synced_folder ".", "/vagrant", disabled: true
 
     cfg.vm.provider "virtualbox" do |vb, override|
-      vb.gui = true
+      vb.gui = false
       vb.name  = "sandbox"
       vb.default_nic_type = "82545EM"
-      vb.customize ["modifyvm", :id, "--memory", 4096]
+      vb.customize ["modifyvm", :id, "--memory", 8192]
       vb.customize ["modifyvm", :id, "--cpus", 2]
-      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--vram", "256"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
     end
@@ -44,11 +44,11 @@ Vagrant.configure("2") do |config|
     cfg.vm.network :private_network, ip: "192.168.30.100", gateway: "192.168.30.1", dns: "8.8.8.8"
 
     cfg.vm.provider "virtualbox" do |vb, override|
-      vb.gui = true
+      vb.gui = false
       vb.name = "cuckoo"
-      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--memory", 8192]
       vb.customize ["modifyvm", :id, "--cpus", 2]
-      vb.customize ["modifyvm", :id, "--vram", "32"]
+      vb.customize ["modifyvm", :id, "--vram", "256"]
       vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
