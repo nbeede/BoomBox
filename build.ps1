@@ -1,4 +1,3 @@
-
 <#
 .Synopsis
   This script is used to build, deploy, and configure BoomBox
@@ -19,6 +18,9 @@
 
 .PARAMETER VagrantOnly
   This switch skips building packer boxes and instead builds from an existing box file.
+  
+.PARAMETER UploadFile
+  Files to upload.
 
 .EXAMPLE
   build.ps1 -ProviderName virtualbox
@@ -36,6 +38,7 @@ Param(
   [ValidateSet('virtualbox')]
   [string]$ProviderName,
   [string]$PackerPath = 'C:\Hashicorp\packer.exe',
+  [switch]$UploadFile,
   [switch]$PackerOnly,
   [switch]$VagrantOnly
 )

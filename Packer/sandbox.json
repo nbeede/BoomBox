@@ -1,28 +1,9 @@
 {
-  "variables": {
-    "iso_checksum": "27e4feb9102f7f2b21ebdb364587902a70842fb550204019d1a14b120918e455",
-    "iso_checksum_type": "sha256",
-    "iso_url": "https://software-download.microsoft.com/download/pr/17134.1.180410-1804.rs4_release_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
-    "autounattend": "./answer_files/10/Autounattend.xml",
-    "disk_size": "61440"
-  },
   "builders": [
     {
-      "type": "virtualbox-iso",
-      "vm_name": "sandbox",
-      "communicator": "winrm",
-      "iso_url": "{{user `iso_url`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "headless": false,
-      "boot_wait": "6m",
       "boot_command": "",
-      "winrm_username": "vagrant",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "4h",
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "guest_os_type": "Windows81_64",
-      "guest_additions_mode": "disable",
+      "boot_wait": "6m",
+      "communicator": "winrm",
       "disk_size": "{{user `disk_size`}}",
       "floppy_files": [
         "{{user `autounattend`}}",
@@ -39,6 +20,13 @@
         "./scripts/win-updates.ps1",
         "./scripts/oracle-cert.cer"
       ],
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Windows81_64",
+      "headless": false,
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "type": "virtualbox-iso",
       "vboxmanage": [
         [
           "modifyvm",
@@ -52,53 +40,64 @@
           "--cpus",
           "2"
         ]
-      ]
+      ],
+      "vm_name": "sandbox",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "winrm_username": "vagrant"
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "sandbox_{{.Provider}}.box",
+      "type": "vagrant"
     }
   ],
   "provisioners": [
     {
-      "type": "windows-shell",
-      "remote_path": "/tmp/script.bat",
       "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "remote_path": "/tmp/script.bat",
       "scripts": [
         "./scripts/enable-rdp.bat"
-      ]
+      ],
+      "type": "windows-shell"
     },
     {
-      "type": "powershell",
       "scripts": [
         "./scripts/debloat-windows.ps1",
         "./scripts/rearm-windows.ps1",
         "./scripts/MakeWindows10GreatAgain.ps1"
-      ]
+      ],
+      "type": "powershell"
     },
     {
       "type": "windows-restart"
     },
     {
-      "type": "powershell",
       "scripts": [
         "./scripts/set-powerplan.ps1",
         "./scripts/docker/disable-windows-defender.ps1"
-      ]
+      ],
+      "type": "powershell"
     },
     {
-      "type": "windows-shell",
-      "remote_path": "/tmp/script.bat",
       "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "remote_path": "/tmp/script.bat",
       "scripts": [
         "./scripts/pin-powershell.bat",
         "./scripts/compile-dotnet-assemblies.bat",
         "./scripts/set-winrm-automatic.bat",
         "./scripts/compact.bat"
-      ]
+      ],
+      "type": "windows-shell"
     }
   ],
-  "post-processors": [
-    {
-      "type": "vagrant",
-      "keep_input_artifact": false,
-      "output": "sandbox_{{.Provider}}.box"
-    }
-  ]
+  "variables": {
+    "autounattend": "./answer_files/10/Autounattend.xml",
+    "disk_size": "61440",
+    "iso_checksum": "27e4feb9102f7f2b21ebdb364587902a70842fb550204019d1a14b120918e455",
+    "iso_checksum_type": "sha256",
+    "iso_url": "https://software-download.microsoft.com/download/pr/17134.1.180410-1804.rs4_release_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  }
 }
