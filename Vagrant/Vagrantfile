@@ -18,10 +18,19 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", path: "scripts/install_python.ps1", privileged: false
     cfg.vm.provision "shell", path: "scripts/install_pillow.ps1", privileged: false
     cfg.vm.provision "shell", path: "scripts/install_agent.ps1", privileged: false
+	cfg.vm.provision "shell", path: "scripts/install_radare2.ps1", privileged: false
+	
+	for argument_i in 0..ENV["UPLOAD_FILES"].split(" ").length() do
+      upload_file_path = ENV["UPLOAD_FILES"].split(" ")[argument_i]
+	  download_file_path = ENV["DOWNLOAD_FILES"].split(" ")[argument_i]
+	  cfg.vm.provision "shell", path: "scripts/upload_malware.ps1", args: "#{upload_file_path} #{download_file_path}", privileged: false
+	end
+	
     cfg.vm.provision "shell", path: "scripts/enable_rpc.ps1", privileged: false
     cfg.vm.provision "shell", path: "scripts/fix_networking.ps1", privileged: false
     cfg.vm.provision "shell", path: "scripts/disable_defender.ps1", privileged: false
     cfg.vm.provision "shell", path: "scripts/disable_probing.ps1", privileged: false
+
 
     cfg.vm.synced_folder ".", "/vagrant", disabled: true
 
